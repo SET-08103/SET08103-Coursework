@@ -1,30 +1,22 @@
-name: Build
-
-on:
-  push:
-    branches:
-      - master
-      - develop
-      - release
-  pull_request:
+name: A workflow for my Hello World App
+on: push
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-
+    name: Hello world action
+    runs-on: ubuntu-22.04
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Java
-        uses: actions/setup-java@v4
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          submodules: recursive
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: maven
-
       - name: Build with Maven
-        run: mvn clean package
+        run: mvn package
+      - name: Run docker compose
+        run: docker compose up --abort-on-container-exit
 
-      - name: Build Docker image
-        run: docker build -t set08103 .
