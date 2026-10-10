@@ -6,6 +6,26 @@ public class App
 {
     public static void main(String[] args)
     {
+        // Create new Application
+        App a = new App();
+
+        // Connect to database
+        a.connect();
+
+        // Disconnect from database
+        a.disconnect();
+    }
+
+    /**
+     * Connection to MySQL database.
+     */
+    private Connection con = null;
+
+    /**
+     * Connect to the MySQL database.
+     */
+    public void connect()
+    {
         try
         {
             // Load Database driver
@@ -17,9 +37,7 @@ public class App
             System.exit(-1);
         }
 
-        // Connection to the database
-        Connection con = null;
-        int retries = 100;
+        int retries = 10;
         for (int i = 0; i < retries; ++i)
         {
             System.out.println("Connecting to database...");
@@ -30,9 +48,6 @@ public class App
                 // Connect to database
                 con = DriverManager.getConnection("jdbc:mysql://db:3306/world?allowPublicKeyRetrieval=true&useSSL=false", "root", "example");
                 System.out.println("Successfully connected");
-                // Wait a bit
-                Thread.sleep(10000);
-                // Exit for loop
                 break;
             }
             catch (SQLException sqle)
@@ -45,7 +60,57 @@ public class App
                 System.out.println("Thread interrupted? Should not happen.");
             }
         }
+    }
 
+    /**
+     * Displays the top N most populated countries in a specified region,
+     * ordered from largest population to smallest.
+     *
+     * @param region The region to search for.
+     * @param n The maximum number of countries to display.
+     */
+    public void getTopNCountriesByRegion(String region, int n)
+    {
+        if (n <= 0)
+        {
+            System.out.println("Please enter a number greater than 0.");
+            return;
+        }
+
+        String sql = "SELECT * FROM country WHERE Region = ? ORDER BY Population DESC LIMIT ?";
+
+    try (PreparedStatement stmt = con.prepareStatement(sql))
+    {
+        stmt.setString(1, region);
+        stmt.setInt(2, n);
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next())
+        {
+            String name = rs.getString("Name");
+            int population = rs.getInt("Population");
+            String code = rs.getString("Code");
+            String continent = rs.getString("Continent");
+            String capital = rs.getString("Capital");
+            String countryRegion = rs.getString("Region");
+            if (capital == null)
+            {
+                capital = "N/A";
+            }
+
+            System.out.println(code + " - " + name + " - " + continent + " - " + countryRegion + " - " + population + " - " + capital);
+        }
+    }
+    catch (SQLException e)
+    {
+        System.out.println("Error retrieving countries: " + e.getMessage());
+    }
+}
+
+    /**
+     * Disconnect from the MySQL database.
+     */
+    public void disconnect()
+    {
         if (con != null)
         {
             try
@@ -59,4 +124,10 @@ public class App
             }
         }
     }
+
+
+
+
+
+
 }
