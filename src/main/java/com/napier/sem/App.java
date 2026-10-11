@@ -12,6 +12,10 @@ public class App
         // Connect to database
         a.connect();
 
+        String continent = "Europe";
+        //METHODS CALLS FOR SQL HERE:
+        a.getCitiesInContinent(continent);
+
         // Disconnect from database
         a.disconnect();
     }
@@ -81,9 +85,47 @@ public class App
         }
     }
 
+    //METHOD TO PRINT CITIES BY CONTINENT BY POPULATION IN DESCENDING ORDER
+    public void getCitiesInContinent(String continent)
+    {
+        try
+        {
+            //CREATE AN SQL STATEMENT
+            Statement stmt = con.createStatement();
 
 
+            //STRING FOR THE SQL STATEMENT THAT GETS city AND population GIVEN THE continent IN descending ORDER
+            String strSelect = "SELECT city.Name, city.Population " +
+                    "FROM city " +
+                    "JOIN country ON city.CountryCode = country.Code " +
+                    "WHERE country.Continent ='" + continent + "' " +
+                    "ORDER BY city.Population DESC";
 
+            //EXECUTE SQL STATEMENT
+            ResultSet rset = stmt.executeQuery(strSelect);
 
+            //HEADER PRINT STATEMENT
+            System.out.println("Cities in " + continent + " ordered by largest popluation size to smallest: ");
+
+            //WHILE LOOP THAT GOES THROUGH EACH ROW OF THE RESULT SET
+            while(rset.next())
+            {
+                String cityName = rset.getString("Name");
+                int population = rset.getInt("Population");
+
+                //PRINT CITY NAME AND POPULATION
+                System.out.println(cityName + " - Population: " + population);
+            }
+
+            rset.close();
+            stmt.close();
+        }
+
+        catch(Exception e)
+        {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get cities.");
+        }
+    }
 
 }
