@@ -12,6 +12,9 @@ public class App
         // Connect to database
         a.connect();
 
+        // countries by continent (Issue 2)
+        a.getCountriesByContinent("Europe");
+
         // Disconnect from database
         a.disconnect();
     }
@@ -81,8 +84,41 @@ public class App
         }
     }
 
+    /**
+     * All the countries in a continent organised by largest population to smallest.
+     * @param
+     */
 
+    public void getCountriesByContinent(String continent)
+    {
+        try
+        {
+            // Create an SQL statement
+            Statement stmt = con.createStatement();
+            // Create string for SQL statement
+            String strSelect =
+                    "SELECT Name, Population "
+                   + "FROM country "
+                   + "WHERE Continent = '" + continent + "' "
+                   + "ORDER BY population DESC ";
 
+            // Execute SQL statement
+            ResultSet rset = stmt.executeQuery(strSelect);
+            // Display all countries in continent
+            // Check one is returned
+            while (rset.next())
+            {
+                System.out.println("Country: " + rset.getString("Name") + ", Population: " + rset.getInt("Population"));
+            }
+
+        }
+        catch (Exception e)
+        {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get country details");
+
+        }
+    }
 
 
 
