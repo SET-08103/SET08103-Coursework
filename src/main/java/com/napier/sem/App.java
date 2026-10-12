@@ -63,6 +63,40 @@ public class App
     }
 
     /**
+     * Displays all countries in a specified region,
+     * ordered from largest population to smallest.
+     *
+     * @param region The region to search for.
+     */
+    public void getCountriesByRegion(String region)
+    {
+        String sql = "SELECT * FROM country WHERE Region = ? ORDER BY Population DESC";
+
+        try (PreparedStatement stmt = con.prepareStatement(sql))
+        {
+            stmt.setString(1, region);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next())
+            {
+                String code = rs.getString("Code");
+                String continent = rs.getString("Continent");
+                String name = rs.getString("Name");
+                int population = rs.getInt("Population");
+                String capital = rs.getString("Capital");
+                if (capital == null)
+                {
+                    capital = "N/A";
+                }
+                String countryRegion = rs.getString("Region");
+                System.out.println(code + " - " + name + " - " + continent + " - " + countryRegion + " - " + population + " - " + capital);
+            }
+        }
+        catch (SQLException e)
+        {
+            System.out.println("Error retrieving countries: " + e.getMessage());
+        }
+    }
+    /**
      * Disconnect from the MySQL database.
      */
     public void disconnect()
