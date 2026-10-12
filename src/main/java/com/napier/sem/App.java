@@ -1,3 +1,4 @@
+
 package com.napier.sem;
 
 import java.sql.*;
@@ -20,26 +21,28 @@ public class App
         // Connection to the database
         Connection con = null;
         int retries = 100;
+
         for (int i = 0; i < retries; ++i)
         {
             System.out.println("Connecting to database...");
+
             try
             {
-                // Wait a bit for db to start
-                Thread.sleep(30000);
-                // Connect to database
+                // Connect to the database
+
                 con = DriverManager.getConnection(
-
-                        "jdbc:mysql://db:3306/world?allowPublicKeyRetrieval=true&useSSL=false",
-
-                        "root", "example"
+                        "jdbc:mysql://localhost:33060/world?allowPublicKeyRetrieval=true&useSSL=false",
+                        "root",
+                        "example"
                 );
+
+
                 System.out.println("Successfully connected");
 
                 CountryReport report = new CountryReport();
                 report.getCountries(con);
 
-// Exit for loop
+                // Exit for loop
                 break;
             }
             catch (SQLException sqle)
@@ -47,9 +50,19 @@ public class App
                 System.out.println("Failed to connect to database attempt " + i);
                 System.out.println(sqle.getMessage());
             }
-            catch (InterruptedException ie)
+
+            if (i < retries - 1)
             {
-                System.out.println("Thread interrupted? Should not happen.");
+                try
+                {
+                    Thread.sleep(2000);
+                }
+                catch (InterruptedException ie)
+                {
+                    Thread.currentThread().interrupt();
+                    System.out.println("Database connection retry interrupted.");
+                    break;
+                }
             }
         }
 
@@ -60,7 +73,7 @@ public class App
                 // Close connection
                 con.close();
             }
-            catch (Exception e)
+            catch (SQLException e)
             {
                 System.out.println("Error closing connection to database");
             }
