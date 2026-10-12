@@ -86,14 +86,6 @@ public class App
             }
         }
     }
-    /**
-     * Gets the top N most populated capital cities in a region.
-     *
-     * @param region the region to search, e.g. "Caribbean"
-     * @param n      the number of capital cities to return
-     * @return a list of capital cities ordered by population (largest first),
-     *         or null if an error occurs
-     */
 
 
     /**
