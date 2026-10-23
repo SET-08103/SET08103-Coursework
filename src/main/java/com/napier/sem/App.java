@@ -38,11 +38,19 @@ public class App
 
 
                 System.out.println("Successfully connected");
+                // Query 1: All Countries by Population
+                // CountryReport report = new CountryReport();
+                // report.getCountries(con);
 
-                CountryReport report = new CountryReport();
-                report.getCountries(con);
+                // Query 7: All cities by population
+                    CityReport report = new CityReport();
+                    report.getCities(con);
 
-                // Exit for loop
+                // Query 17: All Capital cities by population
+                //  CapitalCityReport report = new CapitalCityReport();
+                //  report.getCapitalCities(con);
+
+
                 break;
             }
             catch (SQLException sqle)
