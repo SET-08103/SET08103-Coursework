@@ -15,6 +15,7 @@ public class App
         String continent = "Europe";
         //METHODS CALLS FOR SQL HERE:
         a.getCitiesInContinent(continent);
+        a.getCapitalCitiesInRegion("Western Europe");
 
         // Disconnect from database
         a.disconnect();
@@ -128,4 +129,33 @@ public class App
         }
     }
 
+    public void getCapitalCitiesInRegion(String region)
+    {
+        String sql = "SELECT city.Name, city.Population " +
+                "FROM city " +
+                "JOIN country ON country.Capital = city.ID " +
+                "WHERE country.Region = ? " +
+                "ORDER BY city.Population DESC";
+
+        try (PreparedStatement pstmt = con.prepareStatement(sql))
+        {
+            pstmt.setString(1, region);
+            try (ResultSet rs = pstmt.executeQuery())
+            {
+                System.out.println("Capital cities in " + region + ":");
+
+                while (rs.next())
+                {
+                    String cityName = rs.getString("Name");
+                    int population = rs.getInt("Population");
+
+                    System.out.println(cityName + " - Population: " + population);
+                }
+            }
+        }
+        catch (SQLException e)
+        {
+            System.out.println("Failed to retrieve capital cities: " + e.getMessage());
+        }
+    }
 }
