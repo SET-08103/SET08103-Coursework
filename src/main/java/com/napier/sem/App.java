@@ -16,6 +16,8 @@ public class App
         //METHODS CALLS FOR SQL HERE:
         a.getCitiesInContinent(continent);
 
+        a.getTopNCitiesInCountry("United Kingdom", 5);
+
         // Disconnect from database
         a.disconnect();
     }
@@ -125,6 +127,37 @@ public class App
         {
             System.out.println(e.getMessage());
             System.out.println("Failed to get cities.");
+        }
+    }
+    public void getTopNCitiesInCountry(String country, int n)
+    {
+        String sql = "SELECT city.Name, city.Population " +
+                "FROM city " +
+                "JOIN country ON city.CountryCode = country.Code " +
+                "WHERE country.Name = ? " +
+                "ORDER BY city.Population DESC " +
+                "LIMIT ?";
+
+        try (PreparedStatement pstmt = con.prepareStatement(sql))
+        {
+            pstmt.setString(1, country);
+            pstmt.setInt(2, n);
+            try (ResultSet rs = pstmt.executeQuery())
+            {
+                System.out.println("Top " + n + " cities in " + country + ":");
+
+                while (rs.next())
+                {
+                    String cityName = rs.getString("Name");
+                    int population = rs.getInt("Population");
+
+                    System.out.println(cityName + " - Population: " + population);
+                }
+            }
+        }
+        catch (SQLException e)
+        {
+            System.out.println("Failed to retrieve top cities: " + e.getMessage());
         }
     }
 
