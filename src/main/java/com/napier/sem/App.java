@@ -16,9 +16,11 @@ public class App
         String continent = "Europe";
         String region = "Caribbean";
 
+
         //METHODS CALLS FOR SQL HERE:
         a.getCitiesInContinent(continent);
         a.getCitiesByRegion(region);
+        a.getTopPopulatedCountries(4);
 
         // Disconnect from database
         a.disconnect();
@@ -86,6 +88,45 @@ public class App
             {
                 System.out.println("Error closing connection to database");
             }
+        }
+    }
+
+    public void getTopPopulatedCountries(int n)
+    {
+        try
+        {
+            //CREATE AN SQL STATEMENT
+            Statement stmt = con.createStatement();
+
+
+            String strSelect = "SELECT name, population " +
+                    "FROM country " +
+                    "ORDER BY Population DESC " +
+                    "LIMIT " + n;
+
+
+            //EXECUTE SQL STATEMENT
+            ResultSet rset = stmt.executeQuery(strSelect);
+
+            //HEADER PRINT STATEMENT
+            System.out.println("Top " + n + " populated countries");
+
+            //WHILE LOOP THAT GOES THROUGH EACH ROW OF THE RESULT SET
+            while(rset.next())
+            {
+                String name = rset.getString("Name");
+                int population = rset.getInt("Population");
+
+                //PRINT CITY NAME AND POPULATION
+                System.out.println("Country: " + name + ", population: " + population);
+            }
+
+        }
+
+        catch(Exception e)
+        {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get countries and population.");
         }
     }
 
@@ -179,5 +220,7 @@ public class App
             System.out.println("Failed to get cities.");
         }
     }
+
+
 
 }
