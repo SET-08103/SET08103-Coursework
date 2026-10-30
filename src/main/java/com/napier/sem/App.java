@@ -12,9 +12,13 @@ public class App
         // Connect to database
         a.connect();
 
+        //EXAMPLE STRINGS FOR METHOD CALLS
         String continent = "Europe";
+        String region = "Caribbean";
+
         //METHODS CALLS FOR SQL HERE:
         a.getCitiesInContinent(continent);
+        a.getCitiesByRegion(region);
 
         // Disconnect from database
         a.disconnect();
@@ -83,8 +87,9 @@ public class App
                 System.out.println("Error closing connection to database");
             }
         }
-    }
+    }   
 
+    //ISSUE #8
     //METHOD TO PRINT CITIES BY CONTINENT BY POPULATION IN DESCENDING ORDER
     public void getCitiesInContinent(String continent)
     {
@@ -122,6 +127,53 @@ public class App
         }
 
         catch(Exception e)
+        {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get cities.");
+        }
+    }
+
+    // ISSUE #9
+    // METHOD TO PRINT ALL CITIES IN A REGION ORGANISED BY LARGEST POPULATION TO SMALLEST
+    public void getCitiesByRegion(String region)
+    {
+        try
+        {
+            System.out.println("ISSUE #9 METHOD STARTED");
+
+            // CREATE AN SQL STATEMENT
+            Statement stmt = con.createStatement();
+
+            // STRING FOR THE SQL STATEMENT THAT GETS CITY NAME AND POPULATION
+            // GIVEN THE REGION, IN DESCENDING ORDER OF POPULATION
+            String strSelect = "SELECT city.Name, city.Population " +
+                    "FROM city " +
+                    "JOIN country ON city.CountryCode = country.Code " +
+                    "WHERE country.Region = '" + region + "' " +
+                    "ORDER BY city.Population DESC";
+
+            // EXECUTE SQL STATEMENT
+            ResultSet rset = stmt.executeQuery(strSelect);
+
+            // HEADER PRINT STATEMENT
+            System.out.println("Cities in " + region +
+                    " ordered by largest population size to smallest:");
+
+            // WHILE LOOP THAT GOES THROUGH EACH ROW OF THE RESULT SET
+            while (rset.next())
+            {
+                String cityName = rset.getString("Name");
+                int population = rset.getInt("Population");
+
+                // PRINT CITY NAME AND POPULATION
+                System.out.println(cityName + " - Region Population: " + population);
+            }
+
+            rset.close();
+            stmt.close();
+        }
+
+        catch (Exception e)
         {
             System.out.println(e.getMessage());
             System.out.println("Failed to get cities.");
