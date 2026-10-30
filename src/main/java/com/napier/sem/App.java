@@ -18,10 +18,11 @@ public class App
 
 
         //METHODS CALLS FOR SQL HERE:
-        a.getCountriesByContinent("Europe");
+        a.getCountriesByContinent(continent);
+        a.getTopPopulatedCountries(4);
         a.getCitiesInContinent(continent);
         a.getCitiesByRegion(region);
-        a.getTopPopulatedCountries(4);
+
 
         // Disconnect from database
         a.disconnect();
@@ -92,6 +93,10 @@ public class App
         }
     }
 
+    /**
+     *  Issue #2, All the countries in a continent organised by largest population to smallest.
+     */
+
     public void getCountriesByContinent(String continent)
     {
         try
@@ -123,6 +128,9 @@ public class App
 
     }
 
+    /**
+     *  Issue #4, Top N populated countries in the world, ordered by population descending.
+     */
 
     public void getTopPopulatedCountries(int n)
     {
