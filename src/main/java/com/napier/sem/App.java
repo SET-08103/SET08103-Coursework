@@ -23,7 +23,6 @@ public class App
         a.getCitiesInContinent(continent);
         a.getCitiesByRegion(region);
 
-
         // Disconnect from database
         a.disconnect();
     }
@@ -94,7 +93,7 @@ public class App
     }
 
     /**
-     *  Issue #2, All the countries in a continent organised by largest population to smallest.
+     *  Issue #2, All the countries in a continent organised by largest population to smallest
      */
 
     public void getCountriesByContinent(String continent)
