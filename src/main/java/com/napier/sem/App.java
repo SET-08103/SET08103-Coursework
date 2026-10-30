@@ -122,6 +122,6 @@ public class App
             System.out.println("Failed to get country details");
         }
 
-        }
     }
+}
 
