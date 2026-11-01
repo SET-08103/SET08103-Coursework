@@ -15,13 +15,14 @@ public class App
         //EXAMPLE STRINGS FOR METHOD CALLS
         String continent = "Europe";
         String region = "Caribbean";
-
+        String district = "California";
 
         //METHODS CALLS FOR SQL HERE:
         a.getCountriesByContinent(continent);
         a.getTopPopulatedCountries(4);
         a.getCitiesInContinent(continent);
         a.getCitiesByRegion(region);
+        a.getCitiesByDistrict(district);
 
         // Disconnect from database
         a.disconnect();
@@ -250,8 +251,7 @@ public class App
             ResultSet rset = stmt.executeQuery(strSelect);
 
             // HEADER PRINT STATEMENT
-            System.out.println("Cities in " + region +
-                    " ordered by largest population size to smallest:");
+            System.out.println("Cities in " + region + " ordered by largest population size to smallest:");
 
             // WHILE LOOP THAT GOES THROUGH EACH ROW OF THE RESULT SET
             while (rset.next())
@@ -273,6 +273,53 @@ public class App
             System.out.println("Failed to get cities.");
         }
     }
+
+    // ISSUE #11
+    // METHOD TO PRINT ALL CITIES IN A DISTRICT ORGANISED BY LARGEST POPULATION TO SMALLEST
+    public void getCitiesByDistrict(String district)
+    {
+        try
+        {
+            System.out.println("ISSUE #11 METHOD STARTED");
+
+            // CREATE AN SQL STATEMENT
+            Statement stmt = con.createStatement();
+
+            // STRING FOR THE SQL STATEMENT THAT GETS CITY NAME AND POPULATION
+            // GIVEN THE DISTRICT, IN DESCENDING ORDER OF POPULATION
+            String strSelect = "SELECT city.Name, city.Population " +
+                    "FROM city " +
+                    "WHERE city.District = '" + district + "' " +
+                    "ORDER BY city.Population DESC";
+
+            // EXECUTE SQL STATEMENT
+            ResultSet rset = stmt.executeQuery(strSelect);
+
+            // HEADER PRINT STATEMENT
+            System.out.println("Cities in " + district + " ordered by largest population size to smallest:");
+
+            // WHILE LOOP THAT GOES THROUGH EACH ROW OF THE RESULT SET
+            while (rset.next())
+            {
+                String cityName = rset.getString("Name");
+                int population = rset.getInt("Population");
+
+                // PRINT CITY NAME AND POPULATION
+                System.out.println(cityName + " - District Population: " + population);
+            }
+
+            rset.close();
+            stmt.close();
+        }
+
+        catch (Exception e)
+        {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get cities.");
+        }
+    }
+
+
 }
 
 
