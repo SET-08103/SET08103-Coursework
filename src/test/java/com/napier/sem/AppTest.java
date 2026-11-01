@@ -24,4 +24,15 @@ public class AppTest
         assertEquals(5, 5, "Messages are equal");
     }
 
+    @Test
+    void testCountriesByContinent()
+    {
+        app.getCountriesByContinent(null);
+    }
+
+    @Test
+    void testTopPopulatedCountriesZero()
+    {
+        app.getTopPopulatedCountries(0);
+    }
 }

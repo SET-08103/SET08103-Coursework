@@ -98,6 +98,12 @@ public class App
 
     public void getCountriesByContinent(String continent)
     {
+        if(continent == null || continent.isBlank())
+        {
+            System.out.println("Invalid continent");
+            return;
+        }
+
         try
         {
             // Create an SQL statement
@@ -133,6 +139,13 @@ public class App
 
     public void getTopPopulatedCountries(int n)
     {
+        if(n <= 0)
+        {
+            System.out.println("Invalid number of countries");
+            return;
+        }
+
+
         try
         {
             //CREATE AN SQL STATEMENT
