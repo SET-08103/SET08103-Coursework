@@ -23,6 +23,9 @@ public class App
         a.getCitiesInContinent(continent);
         a.getCitiesByRegion(region);
 
+        // Report: top N populated countries in a continent (issue #5)
+        a.printTopNCountriesInContinent(continent, 5);
+
         // Disconnect from database
         a.disconnect();
     }
@@ -273,8 +276,71 @@ public class App
             System.out.println("Failed to get cities.");
         }
     }
+
+    /**
+     * Issue #5: Prints a Country Report of the top N most populated countries in a continent.
+     * Columns: Code, Name, Continent, Region, Population and Capital.
+     *
+     * @param continent the continent to search, e.g. "Europe"
+     * @param n         the number of countries to show
+     */
+    public void printTopNCountriesInContinent(String continent, int n)
+    {
+        // Check the inputs are valid before querying the database
+        if (continent == null || n < 1)
+        {
+            System.out.println("Please provide a continent and a value of N greater than 0.");
+            return;
+        }
+
+        // SQL query: look up each country's capital name, filter by continent,
+        // sort largest first, and keep the top N
+        String sql =
+                "SELECT country.Code, country.Name, country.Continent, country.Region, "
+                        + "country.Population, city.Name AS Capital "
+                        + "FROM country "
+                        + "LEFT JOIN city ON country.Capital = city.ID "
+                        + "WHERE country.Continent = ? "
+                        + "ORDER BY country.Population DESC "
+                        + "LIMIT ?";
+
+        try (PreparedStatement stmt = con.prepareStatement(sql))
+        {
+            // Fill in the ? placeholders with the continent and N
+            stmt.setString(1, continent);
+            stmt.setInt(2, n);
+
+            ResultSet rset = stmt.executeQuery();
+
+            // Print the column headings
+            System.out.println("Top " + n + " populated countries in " + continent + ":");
+            System.out.println(String.format("%-5s %-45s %-15s %-27s %15s %-30s",
+                    "Code", "Name", "Continent", "Region", "Population", "Capital"));
+
+            // Print each row straight from the results
+            while (rset.next())
+            {
+                // Some countries have no capital, so show a dash instead of "null"
+                String capital = rset.getString("Capital");
+                if (capital == null)
+                {
+                    capital = "-";
+                }
+
+                System.out.println(String.format("%-5s %-45s %-15s %-27s %,15d %-30s",
+                        rset.getString("Code"),
+                        rset.getString("Name"),
+                        rset.getString("Continent"),
+                        rset.getString("Region"),
+                        rset.getInt("Population"),
+                        capital));
+            }
+            System.out.println();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get top N countries in continent");
+        }
+    }
 }
-
-
-
-
