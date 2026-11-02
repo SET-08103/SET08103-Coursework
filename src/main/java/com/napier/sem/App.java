@@ -13,12 +13,13 @@ public class App
         a.connect();
 
         //EXAMPLE STRINGS FOR METHOD CALLS
+        int n = 5;
         String continent = "Europe";
         String region = "Caribbean";
 
         //METHODS CALLS FOR SQL HERE:
-        a.getCitiesInContinent(continent);
-        a.getCitiesByRegion(region);
+        a.getCitiesInContinent(continent, n);
+        a.getCitiesByRegion(region, n);
 
         // Disconnect from database
         a.disconnect();
@@ -91,10 +92,18 @@ public class App
 
     //ISSUE #8
     //METHOD TO PRINT CITIES BY CONTINENT BY POPULATION IN DESCENDING ORDER
-    public void getCitiesInContinent(String continent)
+    public void getCitiesInContinent(String continent, int n)
     {
+
         try
         {
+            // Check the inputs are valid before querying the database
+            if (continent == null || n < 1)
+            {
+                System.out.println("Please provide a continent and a value of N greater than 0.");
+                return;
+            }
+
             //CREATE AN SQL STATEMENT
             Statement stmt = con.createStatement();
 
@@ -104,7 +113,9 @@ public class App
                     "FROM city " +
                     "JOIN country ON city.CountryCode = country.Code " +
                     "WHERE country.Continent ='" + continent + "' " +
-                    "ORDER BY city.Population DESC";
+                    "ORDER BY city.Population DESC " +
+                    "LIMIT " + n;
+
 
             //EXECUTE SQL STATEMENT
             ResultSet rset = stmt.executeQuery(strSelect);
@@ -135,10 +146,17 @@ public class App
 
     // ISSUE #9
     // METHOD TO PRINT ALL CITIES IN A REGION ORGANISED BY LARGEST POPULATION TO SMALLEST
-    public void getCitiesByRegion(String region)
+    public void getCitiesByRegion(String region, int n)
     {
         try
         {
+            // Check the inputs are valid before querying the database
+            if (region == null || n < 1)
+            {
+                System.out.println("Please provide a region and a value of N greater than 0.");
+                return;
+            }
+
             System.out.println("ISSUE #9 METHOD STARTED");
 
             // CREATE AN SQL STATEMENT
@@ -150,7 +168,8 @@ public class App
                     "FROM city " +
                     "JOIN country ON city.CountryCode = country.Code " +
                     "WHERE country.Region = '" + region + "' " +
-                    "ORDER BY city.Population DESC";
+                    "ORDER BY city.Population DESC " +
+                    "LIMIT " + n;
 
             // EXECUTE SQL STATEMENT
             ResultSet rset = stmt.executeQuery(strSelect);

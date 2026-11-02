@@ -24,4 +24,9 @@ public class AppTest
         assertEquals(5, 5, "Messages are equal");
     }
 
+    @Test
+    void unitTestCitiesInContinent() {app.getCitiesInContinent(null, 0); }
+
+    @Test
+    void unitTestCitiesInRegion() {app.getCitiesByRegion(null, 0); }
 }
