@@ -25,14 +25,8 @@ public class AppTest
     }
 
     @Test
-    void testCountriesByContinent()
-    {
-        app.getCountriesByContinent(null);
-    }
+    void unitTestCitiesInContinent() {app.getCitiesInContinent(null, 0); }
 
     @Test
-    void testTopPopulatedCountriesZero()
-    {
-        app.getTopPopulatedCountries(0);
-    }
+    void unitTestCitiesInRegion() {app.getCitiesByRegion(null, 0); }
 }
