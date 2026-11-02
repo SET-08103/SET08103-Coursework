@@ -1,3 +1,4 @@
 FROM amazoncorretto:17
-COPY target/*.jar app.jar
-ENTRYPOINT ["java", "-jar", "app.jar"]
+COPY ./target/sem.jar /tmp
+WORKDIR /tmp
+ENTRYPOINT ["java", "-jar", "sem.jar", "db:3306", "30000"]
