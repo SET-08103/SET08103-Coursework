@@ -1,7 +1,6 @@
 package com.napier.sem;
 
 import java.sql.*;
-import java.util.ArrayList;
 
 public class App
 {
@@ -14,8 +13,7 @@ public class App
         a.connect();
 
         // Report: top N populated capital cities in a region
-        ArrayList<CapitalCity> capitals = a.getTopNCapitalCitiesInRegion("Caribbean", 5);
-        a.printCapitalCities(capitals);
+        a.printTopNCapitalCitiesInRegion("Caribbean", 5);
 
         // Disconnect from database
         a.disconnect();
@@ -87,20 +85,19 @@ public class App
     }
 
     /**
-     * Gets the top N most populated capital cities in a region.
+     * Prints a Capital City Report of the top N most populated capital cities in a region.
+     * Columns: Name, Country and Population.
      *
      * @param region the region to search, e.g. "Caribbean"
-     * @param n      the number of capital cities to return
-     * @return a list of capital cities ordered by population (largest first),
-     *         or null if an error occurs
+     * @param n      the number of capital cities to show
      */
-    public ArrayList<CapitalCity> getTopNCapitalCitiesInRegion(String region, int n)
+    public void printTopNCapitalCitiesInRegion(String region, int n)
     {
         // Check the inputs are valid before querying the database
         if (region == null || n < 1)
         {
             System.out.println("Please provide a region and a value of N greater than 0.");
-            return null;
+            return;
         }
 
         // SQL query: join cities to countries on the capital ID,
@@ -120,53 +117,24 @@ public class App
             stmt.setInt(2, n);
 
             ResultSet rset = stmt.executeQuery();
-            ArrayList<CapitalCity> capitals = new ArrayList<>();
 
-            // Turn each row of results into a CapitalCity object
+            // Print the column headings
+            System.out.println("Top " + n + " populated capital cities in " + region + ":");
+            System.out.println(String.format("%-35s %-40s %15s", "Name", "Country", "Population"));
+
+            // Print each row straight from the results
             while (rset.next())
             {
-                CapitalCity capital = new CapitalCity();
-                capital.name = rset.getString("Name");
-                capital.country = rset.getString("Country");
-                capital.population = rset.getInt("Population");
-                capitals.add(capital);
+                System.out.println(String.format("%-35s %-40s %,15d",
+                        rset.getString("Name"),
+                        rset.getString("Country"),
+                        rset.getInt("Population")));
             }
-            return capitals;
         }
         catch (Exception e)
         {
             System.out.println(e.getMessage());
             System.out.println("Failed to get top N capital cities in region");
-            return null;
-        }
-    }
-
-    /**
-     * Prints a Capital City Report with the columns Name, Country and Population.
-     *
-     * @param capitals the list of capital cities to print
-     */
-    public void printCapitalCities(ArrayList<CapitalCity> capitals)
-    {
-        // Handle the case where the query failed or returned nothing
-        if (capitals == null)
-        {
-            System.out.println("No capital cities to display.");
-            return;
-        }
-
-        // Print the column headings
-        System.out.println(String.format("%-35s %-40s %15s", "Name", "Country", "Population"));
-
-        // Print one line per capital city
-        for (CapitalCity capital : capitals)
-        {
-            if (capital == null)
-            {
-                continue;
-            }
-            System.out.println(String.format("%-35s %-40s %,15d",
-                    capital.name, capital.country, capital.population));
         }
     }
 }
