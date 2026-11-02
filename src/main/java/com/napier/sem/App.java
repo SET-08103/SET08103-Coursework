@@ -105,7 +105,7 @@ public class App
         }
 
         try
-        {
+        {git
             // Create an SQL statement
             Statement stmt = con.createStatement();
             // Create string for SQL statement
