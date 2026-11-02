@@ -29,4 +29,16 @@ public class AppTest
 
     @Test
     void unitTestCitiesInRegion() {app.getCitiesByRegion(null, 0); }
+
+    @Test
+    void testCountriesByContinent()
+    {
+        app.getCountriesByContinent(null);
+    }
+
+    @Test
+    void testTopPopulatedCountriesZero()
+    {
+        app.getTopPopulatedCountries(0);
+    }
 }
