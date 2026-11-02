@@ -4,6 +4,9 @@ import java.sql.*;
 
 public class App
 {
+    /**
+     * Connects to database, runs sql methods and disconnects from database
+     */
     public static void main(String[] args)
     {
         // Create new Application
@@ -27,6 +30,7 @@ public class App
         a.getTopPopulatedCountries(4);
         a.getCitiesInContinent(continent, n);
         a.getCitiesByRegion(region, n);
+
 
         // Report: top N populated countries in a continent (issue #5)
         a.printTopNCountriesInContinent(continent, 5);
@@ -319,6 +323,11 @@ public class App
             System.out.println("Failed to get cities.");
         }
     }
+
+    /**
+     * Issue 3, All the countries in a region organised by largest population to smallest
+     */
+
     public void getTopNCitiesInCountry(String country, int n)
     {
         String sql = "SELECT city.Name, city.Population " +
@@ -475,4 +484,6 @@ public class App
             System.out.println("Failed to get top N countries in continent");
         }
     }
+
+
 }

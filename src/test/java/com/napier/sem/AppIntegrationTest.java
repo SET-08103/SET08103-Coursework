@@ -21,8 +21,20 @@ public class AppIntegrationTest
     }
 
     @Test
-    void testGetEmployee()
+    void testGetCountriesByContinent()
     {
+        app.getCountriesByContinent("Europe");
+    }
 
+    @Test
+    void testgetTopPopulatedCountries()
+    {
+        app.getTopPopulatedCountries(2);
+    }
+
+    @Test
+    void testGetCitiesInContinent()
+    {
+        app.getCitiesInContinent("Europe" , 6);
     }
 }
