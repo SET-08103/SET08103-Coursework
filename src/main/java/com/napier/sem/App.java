@@ -187,8 +187,11 @@ public class App
         }
     }
 
-    //ISSUE #8
-    //METHOD TO PRINT CITIES BY CONTINENT BY POPULATION IN DESCENDING ORDER
+    /**
+     *     ISSUE #8
+     *     METHOD TO PRINT CITIES BY CONTINENT BY POPULATION IN DESCENDING ORDER
+     */
+
     public void getCitiesInContinent(String continent, int n)
     {
 
@@ -241,8 +244,11 @@ public class App
         }
     }
 
-    // ISSUE #9
-    // METHOD TO PRINT ALL CITIES IN A REGION ORGANISED BY LARGEST POPULATION TO SMALLEST
+    /**
+     *      ISSUE #9
+     *      METHOD TO PRINT ALL CITIES IN A REGION ORGANISED BY LARGEST POPULATION TO SMALLEST
+     */
+
     public void getCitiesByRegion(String region, int n)
     {
         try
