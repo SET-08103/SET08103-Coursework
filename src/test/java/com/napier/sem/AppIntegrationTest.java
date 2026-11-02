@@ -27,7 +27,7 @@ public class AppIntegrationTest
     }
 
     @Test
-    void testgetTopPopulatedCountries()
+    void testGetTopPopulatedCountries()
     {
         app.getTopPopulatedCountries(2);
     }
