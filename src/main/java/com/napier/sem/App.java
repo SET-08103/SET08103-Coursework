@@ -31,6 +31,8 @@ public class App
         // Report: top N populated countries in a continent (issue #5)
         a.printTopNCountriesInContinent(continent, 5);
 
+        a.getTopNCitiesInCountry("United Kingdom", 5);
+
         // Disconnect from database
         a.disconnect();
     }
@@ -73,6 +75,84 @@ public class App
         }
     }
 
+    /**
+     * Displays the top N most populated countries in a specified region,
+     * ordered from largest population to smallest.
+     *
+     * @param region The region to search for.
+     * @param n The maximum number of countries to display.
+     */
+    public void getTopNCountriesByRegion(String region, int n)
+    {
+        if (n <= 0)
+        {
+            System.out.println("Please enter a number greater than 0.");
+            return;
+        }
+
+        String sql = "SELECT * FROM country WHERE Region = ? ORDER BY Population DESC LIMIT ?";
+
+    try (PreparedStatement stmt = con.prepareStatement(sql))
+    {
+        stmt.setString(1, region);
+        stmt.setInt(2, n);
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next())
+        {
+            String name = rs.getString("Name");
+            int population = rs.getInt("Population");
+            String code = rs.getString("Code");
+            String continent = rs.getString("Continent");
+            String capital = rs.getString("Capital");
+            String countryRegion = rs.getString("Region");
+            if (capital == null)
+            {
+                capital = "N/A";
+            }
+
+            System.out.println(code + " - " + name + " - " + continent + " - " + countryRegion + " - " + population + " - " + capital);
+        }
+    }
+    catch (SQLException e)
+    {
+        System.out.println("Error retrieving countries: " + e.getMessage());
+    }
+}
+
+    /**
+     * Displays all countries in a specified region,
+     * ordered from largest population to smallest.
+     *
+     * @param region The region to search for.
+     */
+    public void getCountriesByRegion(String region)
+    {
+        String sql = "SELECT * FROM country WHERE Region = ? ORDER BY Population DESC";
+
+        try (PreparedStatement stmt = con.prepareStatement(sql))
+        {
+            stmt.setString(1, region);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next())
+            {
+                String code = rs.getString("Code");
+                String continent = rs.getString("Continent");
+                String name = rs.getString("Name");
+                int population = rs.getInt("Population");
+                String capital = rs.getString("Capital");
+                if (capital == null)
+                {
+                    capital = "N/A";
+                }
+                String countryRegion = rs.getString("Region");
+                System.out.println(code + " - " + name + " - " + continent + " - " + countryRegion + " - " + population + " - " + capital);
+            }
+        }
+        catch (SQLException e)
+        {
+            System.out.println("Error retrieving countries: " + e.getMessage());
+        }
+    }
     /**
      * Disconnect from the MySQL database.
      */
@@ -237,6 +317,37 @@ public class App
         {
             System.out.println(e.getMessage());
             System.out.println("Failed to get cities.");
+        }
+    }
+    public void getTopNCitiesInCountry(String country, int n)
+    {
+        String sql = "SELECT city.Name, city.Population " +
+                "FROM city " +
+                "JOIN country ON city.CountryCode = country.Code " +
+                "WHERE country.Name = ? " +
+                "ORDER BY city.Population DESC " +
+                "LIMIT ?";
+
+        try (PreparedStatement pstmt = con.prepareStatement(sql))
+        {
+            pstmt.setString(1, country);
+            pstmt.setInt(2, n);
+            try (ResultSet rs = pstmt.executeQuery())
+            {
+                System.out.println("Top " + n + " cities in " + country + ":");
+
+                while (rs.next())
+                {
+                    String cityName = rs.getString("Name");
+                    int population = rs.getInt("Population");
+
+                    System.out.println(cityName + " - Population: " + population);
+                }
+            }
+        }
+        catch (SQLException e)
+        {
+            System.out.println("Failed to retrieve top cities: " + e.getMessage());
         }
     }
 
