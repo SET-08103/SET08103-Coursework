@@ -37,6 +37,13 @@ public class App
 
         a.getTopNCitiesInCountry("United Kingdom", 5);
 
+        try {
+            CapitalCityReport report = new CapitalCityReport();
+            report.getCapitalCitiesInRegion(a.con, "Western Europe");
+        } catch (SQLException e) {
+            System.out.println("Error retrieving capital cities: " + e.getMessage());
+        }
+
         // Disconnect from database
         a.disconnect();
     }
