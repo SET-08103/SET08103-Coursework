@@ -44,6 +44,7 @@ public class App
             System.out.println("Error retrieving capital cities: " + e.getMessage());
         }
 
+        a.getContinentPopulation();
         // Disconnect from database
         a.disconnect();
     }
@@ -491,6 +492,43 @@ public class App
             System.out.println("Failed to get top N countries in continent");
         }
     }
+    public void getContinentPopulation() {
+        String sql =
+                "SELECT country.Continent, " +
+                        "SUM(country.Population) AS TotalPopulation, " +
+                        "COALESCE(( " +
+                        "    SELECT SUM(city.Population) " +
+                        "    FROM city " +
+                        "    JOIN country AS c ON city.CountryCode = c.Code " +
+                        "    WHERE c.Continent = country.Continent " +
+                        "), 0) AS CityPopulation " +
+                        "FROM country " +
+                        "GROUP BY country.Continent " +
+                        "ORDER BY country.Continent";
 
+        try (Statement stmt = con.createStatement();
+             ResultSet rs = stmt.executeQuery(sql))
+        {
+            while (rs.next())
+            {
+                String continent = rs.getString("Continent");
+                long totalPopulation = rs.getLong("TotalPopulation");
+                long cityPopulation = rs.getLong("CityPopulation");
+
+                long nonCityPopulation = totalPopulation - cityPopulation;
+
+                System.out.println(
+                        continent +
+                                " | Total: " + totalPopulation +
+                                " | Living in cities: " + cityPopulation +
+                                " | Not living in cities: " + nonCityPopulation
+                );
+            }
+        }
+        catch (SQLException e)
+        {
+            System.out.println("Error retrieving continent populations: " + e.getMessage());
+        }
+    }
 
 }
