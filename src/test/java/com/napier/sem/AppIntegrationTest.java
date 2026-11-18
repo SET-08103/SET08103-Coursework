@@ -37,4 +37,10 @@ public class AppIntegrationTest
     {
         app.getCitiesInContinent("Europe" , 6);
     }
+
+    @Test
+    void testGetTopPopulatedCapitalCites()
+    {
+        // Add intergration test for issue 20
+    }
 }

@@ -41,4 +41,15 @@ public class AppTest
     {
         app.getTopPopulatedCountries(0);
     }
+
+    /**
+     *  Issue 20
+     */
+    @Test
+    void testTopPopulatedCapitalCites()
+    {
+        app.getTopPopulatedCapitalCites(0);
+        app.getTopPopulatedCapitalCites(-1);
+    }
+
 }
