@@ -4,13 +4,20 @@ import java.sql.*;
 
 public class App
 {
+    /**
+     * Connects to database, runs sql methods and disconnects from database
+     */
     public static void main(String[] args)
     {
         // Create new Application
         App a = new App();
 
         // Connect to database
-        a.connect();
+        if(args.length < 1){
+            a.connect("localhost:33060", 30000);
+        }else{
+            a.connect(args[0], Integer.parseInt(args[1]));
+        }
 
         //EXAMPLE STRINGS FOR METHOD CALLS
         int n = 5;
@@ -24,11 +31,20 @@ public class App
         a.getCitiesInContinent(continent, n);
         a.getCitiesByRegion(region, n);
 
+
         // Report: top N populated countries in a continent (issue #5)
         a.printTopNCountriesInContinent(continent, 5);
 
         a.getTopNCitiesInCountry("United Kingdom", 5);
 
+        try {
+            CapitalCityReport report = new CapitalCityReport();
+            report.getCapitalCitiesInRegion(a.con, "Western Europe");
+        } catch (SQLException e) {
+            System.out.println("Error retrieving capital cities: " + e.getMessage());
+        }
+
+        a.getContinentPopulation();
         // Disconnect from database
         a.disconnect();
     }
@@ -41,39 +57,31 @@ public class App
     /**
      * Connect to the MySQL database.
      */
-    public void connect()
-    {
-        try
-        {
+    public void connect(String location, int delay) {
+        try {
             // Load Database driver
             Class.forName("com.mysql.cj.jdbc.Driver");
-        }
-        catch (ClassNotFoundException e)
-        {
+        } catch (ClassNotFoundException e) {
             System.out.println("Could not load SQL driver");
             System.exit(-1);
         }
 
         int retries = 10;
-        for (int i = 0; i < retries; ++i)
-        {
+        for (int i = 0; i < retries; ++i) {
             System.out.println("Connecting to database...");
-            try
-            {
+            try {
                 // Wait a bit for db to start
-                Thread.sleep(30000);
+                Thread.sleep(delay);
                 // Connect to database
-                con = DriverManager.getConnection("jdbc:mysql://db:3306/world?allowPublicKeyRetrieval=true&useSSL=false", "root", "example");
+                con = DriverManager.getConnection("jdbc:mysql://" + location
+                                + "/world?allowPublicKeyRetrieval=true&useSSL=false",
+                        "root", "example");
                 System.out.println("Successfully connected");
                 break;
-            }
-            catch (SQLException sqle)
-            {
-                System.out.println("Failed to connect to database attempt " + Integer.toString(i));
+            } catch (SQLException sqle) {
+                System.out.println("Failed to connect to database attempt " +                                  Integer.toString(i));
                 System.out.println(sqle.getMessage());
-            }
-            catch (InterruptedException ie)
-            {
+            } catch (InterruptedException ie) {
                 System.out.println("Thread interrupted? Should not happen.");
             }
         }
@@ -323,6 +331,11 @@ public class App
             System.out.println("Failed to get cities.");
         }
     }
+
+    /**
+     * Issue 3, All the countries in a region organised by largest population to smallest
+     */
+
     public void getTopNCitiesInCountry(String country, int n)
     {
         String sql = "SELECT city.Name, city.Population " +
@@ -479,4 +492,43 @@ public class App
             System.out.println("Failed to get top N countries in continent");
         }
     }
+    public void getContinentPopulation() {
+        String sql =
+                "SELECT country.Continent, " +
+                        "SUM(country.Population) AS TotalPopulation, " +
+                        "COALESCE(( " +
+                        "    SELECT SUM(city.Population) " +
+                        "    FROM city " +
+                        "    JOIN country AS c ON city.CountryCode = c.Code " +
+                        "    WHERE c.Continent = country.Continent " +
+                        "), 0) AS CityPopulation " +
+                        "FROM country " +
+                        "GROUP BY country.Continent " +
+                        "ORDER BY country.Continent";
+
+        try (Statement stmt = con.createStatement();
+             ResultSet rs = stmt.executeQuery(sql))
+        {
+            while (rs.next())
+            {
+                String continent = rs.getString("Continent");
+                long totalPopulation = rs.getLong("TotalPopulation");
+                long cityPopulation = rs.getLong("CityPopulation");
+
+                long nonCityPopulation = totalPopulation - cityPopulation;
+
+                System.out.println(
+                        continent +
+                                " | Total: " + totalPopulation +
+                                " | Living in cities: " + cityPopulation +
+                                " | Not living in cities: " + nonCityPopulation
+                );
+            }
+        }
+        catch (SQLException e)
+        {
+            System.out.println("Error retrieving continent populations: " + e.getMessage());
+        }
+    }
+
 }
