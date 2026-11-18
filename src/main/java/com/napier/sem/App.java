@@ -21,32 +21,31 @@ public class App
 
         //EXAMPLE STRINGS FOR METHOD CALLS
         int n = 5;
-     //   String continent = "Europe";
-      //  String region = "Caribbean";
+        String continent = "Europe";
+        String region = "Caribbean";
 
 
         //METHODS CALLS FOR SQL HERE:
-     //   a.getCountriesByContinent(continent);
-    //    a.getTopPopulatedCountries(4);
-    //    a.getCitiesInContinent(continent, n);
-      //  a.getCitiesByRegion(region, n);
-
+        a.getCountriesByContinent(continent);
+        a.getTopPopulatedCountries(4);
+        a.getCitiesInContinent(continent, n);
+        a.getCitiesByRegion(region, n);
         a.getTopPopulatedCapitalCites(5);
 
 
         // Report: top N populated countries in a continent (issue #5)
-    //    a.printTopNCountriesInContinent(continent, 5);
+        a.printTopNCountriesInContinent(continent, 5);
 
-     //   a.getTopNCitiesInCountry("United Kingdom", 5);
+        a.getTopNCitiesInCountry("United Kingdom", 5);
 
-      //  try {
-      //      CapitalCityReport report = new CapitalCityReport();
-      //      report.getCapitalCitiesInRegion(a.con, "Western Europe");
-      //  } catch (SQLException e) {
-      //      System.out.println("Error retrieving capital cities: " + e.getMessage());
-      //  }
+        try {
+            CapitalCityReport report = new CapitalCityReport();
+            report.getCapitalCitiesInRegion(a.con, "Western Europe");
+        } catch (SQLException e) {
+            System.out.println("Error retrieving capital cities: " + e.getMessage());
+        }
 
-      //  a.getContinentPopulation();
+        a.getContinentPopulation();
 
     }
 
