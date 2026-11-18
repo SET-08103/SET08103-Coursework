@@ -41,4 +41,17 @@ public class AppTest
     {
         app.getTopPopulatedCountries(0);
     }
+
+    /**
+     *  Issue 21
+     *  tests invalid inputs are handled correctly
+     */
+    @Test
+    void testTopPopulatedCapitalCitiesInContinent()
+    {
+        app.getTopPopulatedCapitalCitiesInContinent(null,5);
+        app.getTopPopulatedCapitalCitiesInContinent("", 5);
+        app.getTopPopulatedCapitalCitiesInContinent("Europe", 0);
+        app.getTopPopulatedCapitalCitiesInContinent("Europe", -1);
+    }
 }

@@ -31,6 +31,8 @@ public class App
         a.getCitiesInContinent(continent, n);
         a.getCitiesByRegion(region, n);
 
+        a.getTopPopulatedCapitalCitiesInContinent(continent,n);
+
 
         // Report: top N populated countries in a continent (issue #5)
         a.printTopNCountriesInContinent(continent, 5);
@@ -45,8 +47,7 @@ public class App
         }
 
         a.getContinentPopulation();
-        // Disconnect from database
-        a.disconnect();
+
     }
 
     /**
@@ -181,6 +182,59 @@ public class App
             {
                 System.out.println("Error closing connection to database");
             }
+        }
+    }
+
+    /**
+     * Issue 21, Top N populated capital cities in continent where N is provided.
+     * Capital Cities ordered by population from highest to lowest
+     *
+     * @param continent the continent to search capital cities for.
+     * @param n the max number of cities to display
+     */
+    public void getTopPopulatedCapitalCitiesInContinent(String continent, int n)
+    {
+        if (continent == null || continent.isEmpty() || n <= 0)
+        {
+            System.out.println("Invalid continent or number of capital cities");
+            return;
+        }
+
+        try
+        {
+            //CREATE AN SQL STATEMENT
+            Statement stmt = con.createStatement();
+
+
+            String strSelect = "SELECT city.Name, city.population " +
+                    "FROM city " +
+                    "JOIN country ON city.ID = country.Capital " +
+                    "WHERE country.Continent = '" + continent + "' " +
+                    "ORDER BY city.Population DESC " +
+                    "LIMIT " + n;
+
+
+            //EXECUTE SQL STATEMENT
+            ResultSet rset = stmt.executeQuery(strSelect);
+
+            //HEADER PRINT STATEMENT
+            System.out.println("Top " + n + " populated capital cities in " + continent);
+
+            //WHILE LOOP THAT GOES THROUGH EACH ROW OF THE RESULT SET
+            while(rset.next())
+            {
+                String name = rset.getString("Name");
+                int population = rset.getInt("Population");
+
+                //PRINT CITY NAME AND POPULATION
+                System.out.println("Capital City: " + name + ", population: " + population);
+            }
+
+        }
+
+        catch(Exception e)
+        {
+            System.out.println(e.getMessage());
         }
     }
 
