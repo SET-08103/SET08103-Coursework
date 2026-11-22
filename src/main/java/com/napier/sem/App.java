@@ -45,6 +45,10 @@ public class App
         }
 
         a.getContinentPopulation();
+
+        // Report: top N populated cities in a district (issue #16)
+        a.printTopNCitiesInDistrict("Scotland", n);
+
         // Disconnect from database
         a.disconnect();
     }
@@ -104,32 +108,32 @@ public class App
 
         String sql = "SELECT * FROM country WHERE Region = ? ORDER BY Population DESC LIMIT ?";
 
-    try (PreparedStatement stmt = con.prepareStatement(sql))
-    {
-        stmt.setString(1, region);
-        stmt.setInt(2, n);
-        ResultSet rs = stmt.executeQuery();
-        while (rs.next())
+        try (PreparedStatement stmt = con.prepareStatement(sql))
         {
-            String name = rs.getString("Name");
-            int population = rs.getInt("Population");
-            String code = rs.getString("Code");
-            String continent = rs.getString("Continent");
-            String capital = rs.getString("Capital");
-            String countryRegion = rs.getString("Region");
-            if (capital == null)
+            stmt.setString(1, region);
+            stmt.setInt(2, n);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next())
             {
-                capital = "N/A";
-            }
+                String name = rs.getString("Name");
+                int population = rs.getInt("Population");
+                String code = rs.getString("Code");
+                String continent = rs.getString("Continent");
+                String capital = rs.getString("Capital");
+                String countryRegion = rs.getString("Region");
+                if (capital == null)
+                {
+                    capital = "N/A";
+                }
 
-            System.out.println(code + " - " + name + " - " + continent + " - " + countryRegion + " - " + population + " - " + capital);
+                System.out.println(code + " - " + name + " - " + continent + " - " + countryRegion + " - " + population + " - " + capital);
+            }
+        }
+        catch (SQLException e)
+        {
+            System.out.println("Error retrieving countries: " + e.getMessage());
         }
     }
-    catch (SQLException e)
-    {
-        System.out.println("Error retrieving countries: " + e.getMessage());
-    }
-}
 
     /**
      * Displays all countries in a specified region,
@@ -531,4 +535,60 @@ public class App
         }
     }
 
+    /**
+     * Issue #16: Prints a City Report of the top N most populated cities in a district.
+     * Columns: Name, Country, District and Population.
+     *
+     * @param district the district to search, e.g. "Scotland"
+     * @param n        the number of cities to show
+     */
+    public void printTopNCitiesInDistrict(String district, int n)
+    {
+        // Check the inputs are valid before querying the database
+        if (district == null || district.isBlank() || n < 1)
+        {
+            System.out.println("Please provide a district and a value of N greater than 0.");
+            return;
+        }
+
+        // SQL query: join cities to countries to get the country name,
+        // filter by district, sort largest first, and keep the top N
+        String sql =
+                "SELECT city.Name, country.Name AS Country, city.District, city.Population "
+                        + "FROM city "
+                        + "JOIN country ON city.CountryCode = country.Code "
+                        + "WHERE city.District = ? "
+                        + "ORDER BY city.Population DESC "
+                        + "LIMIT ?";
+
+        try (PreparedStatement stmt = con.prepareStatement(sql))
+        {
+            // Fill in the ? placeholders with the district and N
+            stmt.setString(1, district);
+            stmt.setInt(2, n);
+
+            ResultSet rset = stmt.executeQuery();
+
+            // Print the column headings
+            System.out.println("Top " + n + " populated cities in " + district + ":");
+            System.out.println(String.format("%-35s %-40s %-25s %15s",
+                    "Name", "Country", "District", "Population"));
+
+            // Print each row straight from the results
+            while (rset.next())
+            {
+                System.out.println(String.format("%-35s %-40s %-25s %,15d",
+                        rset.getString("Name"),
+                        rset.getString("Country"),
+                        rset.getString("District"),
+                        rset.getInt("Population")));
+            }
+            System.out.println();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get top N cities in district");
+        }
+    }
 }
