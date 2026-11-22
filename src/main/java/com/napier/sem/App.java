@@ -49,6 +49,9 @@ public class App
         // Report: top N populated cities in a district (issue #16)
         a.printTopNCitiesInDistrict("Scotland", n);
 
+        // Report: population living in and outside cities in each region (issue #24)
+        a.printRegionPopulationReport();
+
         // Disconnect from database
         a.disconnect();
     }
@@ -589,6 +592,66 @@ public class App
         {
             System.out.println(e.getMessage());
             System.out.println("Failed to get top N cities in district");
+        }
+    }
+
+    /**
+     * Issue #24: Prints a Population Report for each region, showing the total
+     * population, the population living in cities and the population not living
+     * in cities, with percentages. Regions are ordered from largest to smallest population.
+     */
+    public void printRegionPopulationReport()
+    {
+        // SQL query: total population per region from the country table, joined to
+        // the total city population per region. They are worked out separately so that
+        // each country's population is only counted once.
+        String sql =
+                "SELECT r.Region, r.TotalPopulation, "
+                        + "COALESCE(c.CityPopulation, 0) AS CityPopulation "
+                        + "FROM (SELECT Region, SUM(Population) AS TotalPopulation "
+                        + "      FROM country "
+                        + "      GROUP BY Region) AS r "
+                        + "LEFT JOIN (SELECT country.Region, SUM(city.Population) AS CityPopulation "
+                        + "           FROM city "
+                        + "           JOIN country ON city.CountryCode = country.Code "
+                        + "           GROUP BY country.Region) AS c "
+                        + "ON r.Region = c.Region "
+                        + "ORDER BY r.TotalPopulation DESC";
+
+        try (Statement stmt = con.createStatement();
+             ResultSet rset = stmt.executeQuery(sql))
+        {
+            // Print the column headings
+            System.out.println("Population living in and not living in cities, by region:");
+            System.out.println(String.format("%-27s %16s %16s %9s %16s %9s",
+                    "Region", "Total", "In Cities", "%", "Not In Cities", "%"));
+
+            // Print one line per region
+            while (rset.next())
+            {
+                String region = rset.getString("Region");
+                long total = rset.getLong("TotalPopulation");
+                long inCities = rset.getLong("CityPopulation");
+                long notInCities = total - inCities;
+
+                // Work out the percentages, avoiding dividing by zero for empty regions
+                double inCitiesPercent = 0;
+                double notInCitiesPercent = 0;
+                if (total > 0)
+                {
+                    inCitiesPercent = inCities * 100.0 / total;
+                    notInCitiesPercent = notInCities * 100.0 / total;
+                }
+
+                System.out.println(String.format("%-27s %,16d %,16d %8.2f%% %,16d %8.2f%%",
+                        region, total, inCities, inCitiesPercent, notInCities, notInCitiesPercent));
+            }
+            System.out.println();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get population report by region");
         }
     }
 }

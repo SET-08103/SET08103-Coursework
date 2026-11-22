@@ -37,4 +37,31 @@ public class AppIntegrationTest
     {
         app.getCitiesInContinent("Europe" , 6);
     }
+
+    /**
+     * Issue #5: runs the top N countries in a continent report against the real database.
+     */
+    @Test
+    void testPrintTopNCountriesInContinent()
+    {
+        app.printTopNCountriesInContinent("Europe", 5);
+    }
+
+    /**
+     * Issue #16: runs the top N cities in a district report against the real database.
+     */
+    @Test
+    void testPrintTopNCitiesInDistrict()
+    {
+        app.printTopNCitiesInDistrict("Scotland", 5);
+    }
+
+    /**
+     * Issue #24: runs the population report for each region against the real database.
+     */
+    @Test
+    void testPrintRegionPopulationReport()
+    {
+        app.printRegionPopulationReport();
+    }
 }
