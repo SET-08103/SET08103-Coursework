@@ -44,4 +44,7 @@ public class AppTest
     {
         app.getTopPopulatedCountries(0);
     }
+
+    @Test
+    void unitTestgetTopNPopulatedCitiesInWorld() {app.getTopNPopulatedCitiesInWorld(0);}
 }

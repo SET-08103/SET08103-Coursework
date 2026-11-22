@@ -70,4 +70,11 @@ public class AppIntegrationTest
      */
     @Test
     void testgetTopNCitiesInContinent() {app.getTopNCitiesInContinent("Europe", 5);}
+
+    /**
+     * ISSUE #12 Gets top N cities in the world, n from user input
+     *
+     */
+    @Test
+    void testgetTopNPopulatedCitiesInWorld() {app.getTopNPopulatedCitiesInWorld(5);}
 }
