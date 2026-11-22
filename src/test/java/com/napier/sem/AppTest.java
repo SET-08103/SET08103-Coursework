@@ -31,6 +31,9 @@ public class AppTest
     void unitTestCitiesInRegion() {app.getCitiesByRegion(null, 0); }
 
     @Test
+    void unitTestTopCitiesByContinent() {app.getTopNCitiesInContinent(null, 0); }
+
+    @Test
     void testCountriesByContinent()
     {
         app.getCountriesByContinent(null);

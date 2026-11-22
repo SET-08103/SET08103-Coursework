@@ -64,4 +64,10 @@ public class AppIntegrationTest
     {
         app.printRegionPopulationReport();
     }
+
+    /**
+     * ISSUE #13 Gets top N cities in a continent from user input
+     */
+    @Test
+    void testgetTopNCitiesInContinent() {app.getTopNCitiesInContinent("Europe", 5);}
 }

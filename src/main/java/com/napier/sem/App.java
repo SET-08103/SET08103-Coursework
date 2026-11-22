@@ -30,10 +30,11 @@ public class App
         a.getTopPopulatedCountries(4);
         a.getCitiesInContinent(continent, n);
         a.getCitiesByRegion(region, n);
+        a.getTopNCitiesInContinent(continent, n);
 
 
         // Report: top N populated countries in a continent (issue #5)
-        a.printTopNCountriesInContinent(continent, 5);
+        a.printTopNCountriesInContinent("Europe", 5);
 
         a.getTopNCitiesInCountry("United Kingdom", 5);
 
@@ -336,6 +337,61 @@ public class App
         {
             System.out.println(e.getMessage());
             System.out.println("Failed to get cities.");
+        }
+    }
+
+    /**
+     * ISSUE #13
+     * METHOD TO PRINT TOP N POPULATED CITIES IN A CONTIENT WHERE N IS PROVIDED BY THE USER
+     */
+
+    public void getTopNCitiesInContinent(String continent, int n)
+    {
+        try
+        {
+            //CHECK IF THE INPUTS ARE VALID BEFORE QUERYING
+            if (continent == null || n < 1)
+            {
+                System.out.println("Please provide a contientn and a value of N greater than 0.");
+                return;
+            }
+
+            //CREATE AN SQL STATEMENT
+            Statement stmt = con.createStatement();
+
+            //STRING FOR THE SQL STATEMENT THAT GETS THE TOP N city AND population GIVEN THE contient IN DESCENDING ORDER
+            String strSelect = "SELECT city.Name, city.Population " +
+                    "FROM city " +
+                    "JOIN country ON city.CountryCode = country.Code " +
+                    "WHERE country.Continent = '" + continent + "' " +
+                    "ORDER BY city.Population DESC " +
+                    "LIMIT " + n;
+
+            //EXECUTE SQL STATEMENT
+            ResultSet rset = stmt.executeQuery(strSelect);
+
+            //HEADER PRINT STATEMENT
+            System.out.println("");
+            System.out.println("Top " + n + " most populated cities in " + continent + ": ");
+
+            //WHILE LOOP THAT GOES THROUGH EACH ROW OF THE RRESULT SET
+            while(rset.next())
+            {
+                String cityName = rset.getString("Name");
+                int population = rset.getInt("Population");
+
+                //PRINT CITY NAME AND POPULATION
+                System.out.println(cityName + " - Population: " + population);
+            }
+
+            rset.close();
+            stmt.close();
+        }
+
+        catch(Exception e)
+        {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get top " + n + " cities in " + continent + ".");
         }
     }
 
