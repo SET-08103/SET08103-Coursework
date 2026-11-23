@@ -89,4 +89,10 @@ public class AppIntegrationTest
     {
         // Add intergration test for issue 20
     }
+
+    @Test
+    void testgetTopPopulatedCapitalCitiesInContinent()
+    {
+        // Add intergration tests for issue 21
+    }
 }
