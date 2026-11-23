@@ -20,18 +20,27 @@ public class AppIntegrationTest
 
     }
 
+    /**
+     * Issue #2, All the countries in a continent organised by largest population to smallest
+     */
     @Test
     void testGetCountriesByContinent()
     {
         app.getCountriesByContinent("Europe");
     }
 
+    /**
+     * Issue #4, Top N populated countries in the world, ordered by population descending.
+     */
     @Test
     void testGetTopPopulatedCountries()
     {
         app.getTopPopulatedCountries(2);
     }
 
+    /**
+     * ISSUE #8 METHOD TO PRINT CITIES BY CONTINENT BY POPULATION IN DESCENDING ORDER
+     */
     @Test
     void testGetCitiesInContinent()
     {
