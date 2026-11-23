@@ -77,4 +77,10 @@ public class AppIntegrationTest
      */
     @Test
     void testgetTopNPopulatedCitiesInWorld() {app.getTopNPopulatedCitiesInWorld(5);}
+
+    @Test
+    void testTopPopulatedCitiesInRegion()
+    {
+        // Add Intergration test for issue 14
+    }
 }

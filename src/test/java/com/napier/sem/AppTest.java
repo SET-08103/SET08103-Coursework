@@ -45,6 +45,18 @@ public class AppTest
         app.getTopPopulatedCountries(0);
     }
 
+    /**
+     *  Issue 14.
+     *  Checks that invalid regions and values of N are handled.
+     */
+    @Test
+    void TestTopPopulatedCitiesInRegion()
+    {
+        app.getTopPopulatedCitiesInRegion(null, 5);
+        app.getTopPopulatedCitiesInRegion("Caribbean", 0);
+        app.getTopPopulatedCitiesInRegion("Caribbean", -1);
+    }
+
     @Test
     void unitTestgetTopNPopulatedCitiesInWorld() {app.getTopNPopulatedCitiesInWorld(0);}
 }
