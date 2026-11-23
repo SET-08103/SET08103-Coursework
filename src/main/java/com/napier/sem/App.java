@@ -33,6 +33,7 @@ public class App
         a.getTopNCitiesInContinent(continent, n);
         a.getTopNPopulatedCitiesInWorld(n);
         a.getTopPopulatedCitiesInRegion(region, n);
+        a.getTopPopulatedCapitalCites(5);
 
 
         // Report: top N populated countries in a continent (issue #5)
@@ -89,7 +90,7 @@ public class App
                 System.out.println("Successfully connected");
                 break;
             } catch (SQLException sqle) {
-                System.out.println("Failed to connect to database attempt " +                                  Integer.toString(i));
+                System.out.println("Failed to connect to database attempt " + Integer.toString(i));
                 System.out.println(sqle.getMessage());
             } catch (InterruptedException ie) {
                 System.out.println("Thread interrupted? Should not happen.");
@@ -237,6 +238,58 @@ public class App
 
                 //PRINT CITY NAME AND POPULATION
                 System.out.println("City: " + name + ", population: " + population);
+            }
+
+        }
+
+        catch(Exception e)
+        {
+            System.out.println(e.getMessage());
+        }
+    }
+
+
+    /**
+     * Issue 20, Top N populated capital cities where N is provided.
+     * Capital Cites ordered by population from highest to lowest
+     *
+     * @param n the max number of cities to display
+     */
+    public void getTopPopulatedCapitalCites(int n)
+    {
+        if (n <= 0)
+        {
+            System.out.println("Invalid number of capital citites");
+            return;
+        }
+
+        try
+        {
+            //CREATE AN SQL STATEMENT
+            Statement stmt = con.createStatement();
+
+
+            String strSelect = "SELECT city.Name, city.population " +
+                    "FROM city " +
+                    "JOIN country ON city.ID = country.Capital " +
+                    "ORDER BY city.Population DESC " +
+                    "LIMIT " + n;
+
+
+            //EXECUTE SQL STATEMENT
+            ResultSet rset = stmt.executeQuery(strSelect);
+
+            //HEADER PRINT STATEMENT
+            System.out.println("Top " + n + " populated capital cites in the world");
+
+            //WHILE LOOP THAT GOES THROUGH EACH ROW OF THE RESULT SET
+            while(rset.next())
+            {
+                String name = rset.getString("Name");
+                int population = rset.getInt("Population");
+
+                //PRINT CITY NAME AND POPULATION
+                System.out.println("Capital City: " + name + ", population: " + population);
             }
 
         }

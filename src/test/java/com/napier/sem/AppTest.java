@@ -59,4 +59,15 @@ public class AppTest
 
     @Test
     void unitTestgetTopNPopulatedCitiesInWorld() {app.getTopNPopulatedCitiesInWorld(0);}
+
+    /**
+     *  Issue 20
+     */
+    @Test
+    void testTopPopulatedCapitalCites()
+    {
+        app.getTopPopulatedCapitalCites(0);
+        app.getTopPopulatedCapitalCites(-1);
+    }
+
 }
