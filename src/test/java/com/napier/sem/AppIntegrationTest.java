@@ -78,21 +78,35 @@ public class AppIntegrationTest
     @Test
     void testgetTopNPopulatedCitiesInWorld() {app.getTopNPopulatedCitiesInWorld(5);}
 
+    /**
+     *  ISSUE #14, gets top populated cities in a region
+     *
+     */
     @Test
     void testTopPopulatedCitiesInRegion()
     {
         // Add Intergration test for issue 14
+        app.getTopPopulatedCitiesInRegion("Caribbean", 3);
     }
 
+    /**
+     *  Issue #20, Top N populated capital cities where N is provided.
+     *
+     */
     @Test
     void testGetTopPopulatedCapitalCites()
     {
-        // Add intergration test for issue 20
+        app.getTopPopulatedCapitalCites(5);
     }
 
+    /**
+     * Issue #21, Top N populated capital cities in continent where N is provided.
+     *
+     */
     @Test
     void testgetTopPopulatedCapitalCitiesInContinent()
     {
         // Add intergration tests for issue 21
+        app.getTopPopulatedCapitalCitiesInContinent("Europe", 2);
     }
 }

@@ -62,6 +62,7 @@ public class AppTest
 
     /**
      *  Issue 20
+     *  tests invalid inputs are handled correctly
      */
     @Test
     void testTopPopulatedCapitalCites()
